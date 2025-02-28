@@ -1,26 +1,34 @@
-import React, { useState } from "react";
+import React, { useEffect } from "react";
+import { Route, Routes, useNavigate } from "react-router-dom";
+import Login from "./views/login";
+import Register from "./views/register";
+import { Toaster } from "react-hot-toast";
+import DashboardLayout from "@/layout/dashboardLayout";
 
-import Navbar from "./components/navbar";
-import Footer from "./components/footer";
-import Toaster from "react-hot-toast";
-import { Route, Routes } from "react-router-dom";
-import Home from "./views/home";
-function App() {
-  const [count, setCount] = useState(0);
-
+const App = () => {
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (localStorage.getItem("user-token")) {
+      navigate("/dashboard");
+    } else {
+      navigate("/login");
+    }
+  }, []);
   return (
-    <div className="w-full overflow-x-hidden">
-      <Navbar />
+    <div className="w-full">
       <Routes>
-        <Route path="/" element={<Home />} />
+        <Route path="/" element={<Login />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/dashboard/*" element={<DashboardLayout />} />
       </Routes>
-      {location.pathname !== "/login" &&
-        location.pathname !== "/form" &&
-        location.pathname !== "/register" &&
-        !location.pathname.includes("/dashboard") && <Footer />}
-      <Toaster position="top-center" reverseOrder={false} />
+      <Toaster
+        position="top-center"
+        reverseOrder={false}
+        containerStyle={{ zIndex: 99999 }}
+      />
     </div>
   );
-}
+};
 
 export default App;
