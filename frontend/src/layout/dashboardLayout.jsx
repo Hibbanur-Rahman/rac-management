@@ -39,9 +39,11 @@ const DashboardLayout = () => {
   }, [dispatch]);
   return (
     <div className="bg-gray-100">
-      <Navbar />
-      <div className="w-full flex gap-[30px]  h-[99vh] overflow-hidden pt-[70px]" style={{scrollbarWidth:'none'}}>
       <div
+        className="w-full flex gap-[30px]  h-[100vh] overflow-hidden pt-5"
+        style={{ scrollbarWidth: "none" }}
+      >
+        <div
           className={`transition-all duration-500 md:w-[300px] w-[250px] absolute md:relative  z-10 ${
             isOpen ? "left-0" : "left-[-250px]"
           } `}
@@ -49,7 +51,7 @@ const DashboardLayout = () => {
           <Sidebar role={user?.role} />
         </div>
         <div
-          className="w-full h-full overflow-y-scroll "
+          className="w-full h-full overflow-y-scroll pe-5"
           style={{ scrollbarWidth: "none" }}
         >
           <Routes>
@@ -61,6 +63,5 @@ const DashboardLayout = () => {
     </div>
   );
 };
-
 
 export default DashboardLayout;

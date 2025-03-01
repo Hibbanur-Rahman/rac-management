@@ -11,6 +11,8 @@ import { SyncLoader } from "react-spinners";
 import { FiUser } from "react-icons/fi";
 import { BsCake2 } from "react-icons/bs";
 import { Oval } from "react-loader-spinner";
+import userService from "@/services/userService";
+import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
 const Register = () => {
   const navigate = useNavigate();
   const [isShowPassword, setIsShowPassword] = useState(false);
@@ -19,19 +21,18 @@ const Register = () => {
   const [username, setUsername] = useState("");
   const [dob, setDob] = useState("");
   const [loader, setLoader] = useState(false);
+  const [role, setRole] = useState("");
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoader(true);
     try {
-      const response = await axios.post(
-        `${import.meta.env.VITE_API_URL}/register`,
-        {
-          email: email,
-          password: password,
-          username: username,
-          role: "admin",
-        }
-      );
+      const payload = {
+        email: email,
+        password: password,
+        name: username,
+        role: "admin",
+      };
+      const response = await userService.Register(payload);
       if (response.status === 201) {
         toast.success("Register Successfully!");
         navigate("/login");
@@ -54,10 +55,13 @@ const Register = () => {
     }
   }, []);
   return (
-    <div className="w-full h-[100vh] overflow-x-hidden overflow-y-scroll bg-[#f7f7f9] flex  justify-center items-center" style={{scrollbarWidth:'none'}}>
+    <div
+      className="w-full h-[100vh] overflow-x-hidden overflow-y-scroll bg-[#f7f7f9] flex  justify-center items-center"
+      style={{ scrollbarWidth: "none" }}
+    >
       <div className="relative z-[10] md:w-3/12 w-11/12 rounded-2xl bg-white shadow-lg  flex flex-col justify-center items-center  p-5">
         <h1 className="text-3xl font-semibold w-full text-[#424242] block ">
-          Adventure starts here  🚀
+          Adventure starts here 🚀
         </h1>
         <p className="w-full text-gray-500">
           Make your event management easy and fun!
@@ -113,10 +117,30 @@ const Register = () => {
               />
             )}
           </div>
-            <div className="flex gap-[10px] items-center w-full">
-                <input type="checkbox" name="" id="" />
-                <p>I agree to <span className="text-blue-800 cursor-pointer hover:text-blue-400">privacy policy & terms</span></p>
-            </div>
+          <div className="flex flex-col w-full relative mb-5">
+            <Select>
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Select a Role" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectLabel>Role</SelectLabel>
+                  <SelectItem value="scholar">Scholar</SelectItem>
+                  <SelectItem value="supervisor">Supervisor</SelectItem>
+                  <SelectItem value="coordinator">Coordinator</SelectItem>
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="flex gap-[10px] items-center w-full">
+            <input type="checkbox" name="" id="" />
+            <p>
+              I agree to{" "}
+              <span className="text-blue-800 cursor-pointer hover:text-blue-400">
+                privacy policy & terms
+              </span>
+            </p>
+          </div>
           {loader ? (
             <button
               disabled
@@ -132,7 +156,7 @@ const Register = () => {
             </button>
           ) : (
             <button
-            type="submit"
+              type="submit"
               onClick={(e) => handleSubmit(e)}
               className="mt-8 bg-[#666cff] text-white font-semibold w-full rounded-xl py-3 text-xl hover:bg-transparent border-[2px] hover:border-[2px] border-[#666cff] hover:text-[#666cff] transition-all duration-300"
             >
@@ -151,11 +175,11 @@ const Register = () => {
           </p>
         </form>
       </div>
-        <img
-              src={SignupImg}
-              alt=""
-              className="absolute bottom-[80px] md:flex hidden"
-            />
+      <img
+        src={SignupImg}
+        alt=""
+        className="absolute bottom-[80px] md:flex hidden"
+      />
     </div>
   );
 };

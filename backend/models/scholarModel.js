@@ -1,90 +1,76 @@
-const mongoose = require("mongoose");
+const mongoose=require('mongoose');
 
-const UserSchema = new mongoose.Schema(
+const scholarSchema = new mongoose.Schema(
   {
-    username: {
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: true,
+      ref: 'User',
+    },
+    name: {
+      type: String,
+      required: [true, 'Please add a name'],
+      maxlength: 50,
+    },
+    rollNo: {
+      type: String,
+      required: [true, 'Please add a roll number'],
+      maxlength: 15,
+      unique: true,
+    },
+    gender: {
+      type: String,
+      enum: ['Male', 'Female', 'Other'],
+    },
+    dateOfAdmission: {
+      type: Date,
+    },
+    preSubmissionDate: {
+      type: Date,
+    },
+    thesisSubmissionDate: {
+      type: Date,
+    },
+    vivaVoceDate: {
+      type: Date,
+    },
+    researchTopic: {
+      type: String,
+      maxlength: 150,
+    },
+    fullTime: {
+      type: Boolean,
+      required: true,
+      default: true,
+    },
+    status: {
       type: String,
       required: true,
+      enum: ['Active', 'On Leave', 'Completed', 'Discontinued'],
+      default: 'Active',
     },
-    email: {
-      type: String,
+    dateOfAward: {
+      type: Date,
+    },
+    supervisorId: {
+      type: mongoose.Schema.Types.ObjectId,
       required: true,
+      ref: 'Supervisor',
     },
-    mobile: {
-      type: String,
-      required: false,
+    hodNomineeId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Supervisor',
     },
-    password: {
-      type: String,
-      required: true,
+    supervisorNomineeId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Supervisor',
     },
-    role: {
-      type: String,
-      required: false,
-    },
-    pinBilling: {
-      pin: {
-        type: String,
-        required: false,
-        unique: true, // Ensure the PIN is unique
-      },
-      duration: {
-        type: String,
-        required: false,
-      },
-      isUsed: {
-        type: Boolean,
-        required: false,
-        default: false, // Default to false when created
-      },
-      createdTime: {
-        type: Date,
-        required: false,
-        default: Date.now, // Default to the current timestamp
-      },
-    },
-    subscription: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Subscription",
-      },
-    ],
-    billing: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Billing",
-      },
-    ],
-    transaction:[
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Transaction",
-      }
-    ]
   },
-  { timestamps: true }
+  {
+    timestamps: true,
+  }
 );
 
-// Generate a PIN before saving the user
-UserSchema.pre("save", function (next) {
-  if (!this.pinBilling.pin) {
-    // Generate a 6-digit random PIN
-    this.pinBilling.pin = Math.floor(100000 + Math.random() * 900000).toString();
-  }
-  next();
-});
+const Scholar = mongoose.model('Scholar', scholarSchema);
 
-// Validate the PIN length
-UserSchema.path("pinBilling.pin").validate(function (value) {
-  return value && value.length === 6; // Ensure the PIN is exactly 6 digits
-}, "PIN must be 6 digits long.");
-
-// Remove sensitive data from the JSON response
-UserSchema.methods.toJSON = function () {
-  const obj = this.toObject();
-  delete obj.password;
-  // delete obj.pinBilling;
-  return obj;
-};
-
-module.exports = mongoose.model("User", UserSchema);
+module.exports= Scholar;

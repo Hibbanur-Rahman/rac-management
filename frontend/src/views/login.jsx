@@ -11,6 +11,7 @@ import { SyncLoader } from "react-spinners";
 import { login } from "@/redux/slices/authSlice";
 import { useDispatch } from "react-redux";
 import { Oval } from "react-loader-spinner";
+import userService from "@/services/userService";
 const Login = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -22,19 +23,17 @@ const Login = () => {
     e.preventDefault();
     setLoader(true);
     try {
-      const response = await axios.post(
-        `${import.meta.env.VITE_API_URL}/login`,
-        {
-          email: email,
-          password: password,
-        }
-      );
+      const payload = {
+        email: email,
+        password: password,
+      };
+      const response = await userService.Login(payload);
       if (response.status === 200) {
         toast.success("Successfully logged in!");
-        const { User, token } = response.data?.data || {};
-        dispatch(login(User));
-        localStorage.setItem("user", JSON.stringify(User));
-        localStorage.setItem("access_token", token);
+       
+        dispatch(login(response?.data));
+        localStorage.setItem("user", JSON.stringify(response?.data));
+        localStorage.setItem("access_token", response?.data?.token);
         navigate("/dashboard");
         setLoader(false);
       }
@@ -55,7 +54,10 @@ const Login = () => {
     }
   }, []);
   return (
-    <div className="w-full h-[100vh] overflow-x-hidden overflow-y-scroll bg-[#f7f7f9] flex  justify-center items-center" style={{scrollbarWidth:'none'}}>
+    <div
+      className="w-full h-[100vh] overflow-x-hidden overflow-y-scroll bg-[#f7f7f9] flex  justify-center items-center"
+      style={{ scrollbarWidth: "none" }}
+    >
       <div className="relative z-[10] md:w-3/12 w-11/12 rounded-2xl bg-white shadow-lg  flex flex-col justify-center items-center  p-5">
         <h1 className="text-3xl font-semibold w-full text-[#424242] block ">
           Welcome to RAC! 👋🏻

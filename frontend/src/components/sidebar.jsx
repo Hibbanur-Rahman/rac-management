@@ -25,32 +25,32 @@ const Sidebar = () => {
       label: "Dashboard",
       path: "/dashboard",
       icon: LuLayoutDashboard,
-      roles: ["admin", "user"],
+      roles: ["admin", "coordinator", "supervisor", "scholar"],
     },
     {
       label: "Attendant List",
       path: "/dashboard/attendant-list",
       icon: LuNotebookPen,
-      roles: ["admin"],
+      roles: ["admin", "coordinator", "supervisor", "scholar"],
     },
     {
       label: "Event List",
       path: "/dashboard/event-list",
       icon: LuCalendarRange,
-      roles: ["admin"],
+      roles: ["admin", "coordinator", "supervisor", "scholar"],
     },
     {
       label: "Tasks Tracker",
       path: "/dashboard/task-tracker",
       icon: GiMedicines,
-      roles: ["admin"],
+      roles: ["admin", "coordinator", "supervisor", "scholar"],
     },
 
     {
       label: "Profile",
       path: "/dashboard/profile",
       icon: FaRegUser,
-      roles: ["admin", "user"],
+      roles: ["admin", "coordinator", "supervisor", "scholar"],
     },
     // {
     //   label: "Logout",

@@ -1,475 +1,316 @@
-import React, { useEffect, useState } from "react";
-import dashboardImg from "@/assets/images/dashboard-img.png";
-import { useSelector } from "react-redux";
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
-  FaChevronRight,
-  FaUsers,
-  FaShoppingCart,
-  FaWallet,
-  FaBox,
-} from "react-icons/fa";
-import { TbSortDescending2 } from "react-icons/tb";
-import { CiRepeat } from "react-icons/ci";
-import {
-  Chart as ChartJS,
-  ArcElement,
-  Tooltip,
-  Legend,
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  LineElement,
-} from "chart.js";
-import { Doughnut, Bar, Line } from "react-chartjs-2";
-import axios from "axios";
-import toast from "react-hot-toast";
-import { useNavigate } from "react-router-dom";
-import { RiSpeakAiLine } from "react-icons/ri";
-import { formatDate } from "@/utils/dateFormater";
-import { ColorRing } from "react-loader-spinner";
-
-// Register the required components
-ChartJS.register(
-  ArcElement,
-  Tooltip,
-  Legend,
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  LineElement
-);
-
-const BarGraph = () => {
-  const data = {
-    labels: ["January", "February", "March", "April", "May", "June"],
-    datasets: [
-      {
-        label: "Monthly Sales",
-        data: [50, 70, 90, 60, 80, 100],
-        backgroundColor: "rgba(54, 162, 235, 0.6)",
-        borderColor: "rgba(54, 162, 235, 1)",
-        borderWidth: 1,
-      },
-    ],
-  };
-
-  const options = {
-    responsive: true,
-    plugins: {
-      legend: {
-        position: "top",
-      },
-      title: {
-        display: true,
-        text: "Sales Over the Last 6 Months",
-      },
-    },
-    scales: {
-      y: {
-        beginAtZero: true,
-      },
-    },
-  };
-
-  return <Bar data={data} options={options} />;
-};
-
-const ReportGraph = () => {
-  const data = {
-    labels: ["Total Purchase", "Cash Received", "Bank Receive"],
-    datasets: [
-      {
-        label: "My First Dataset",
-        data: [300, 50, 100],
-        backgroundColor: [
-          "rgb(255, 99, 132)",
-          "rgb(54, 162, 235)",
-          "rgb(255, 205, 86)",
-        ],
-        hoverOffset: 4,
-      },
-    ],
-  };
-  const config = {
-    type: "doughnut",
-    data: data,
-  };
-  return (
-    <div className="w-8/12">
-      <Doughnut data={data} />
-    </div>
-  );
-};
-const Card = ({ icon: Icon, title, value, bgColor, borderColor, onClick }) => (
-  <div className="rounded-2xl bg-white shadow-lg p-4 border md:w-3/12 w-full">
-    <div className="flex gap-[30px]">
-      <div className={`rounded-full h-min border ${borderColor} p-1`}>
-        <div className={`p-3 ${bgColor} text-white rounded-full h-min`}>
-          <Icon className="text-3xl" />
-        </div>
-      </div>
-      <div>
-        <p className="text-xl font-medium">{title}</p>
-        <h1 className="text-3xl font-semibold">{value}</h1>
-      </div>
-    </div>
-    {onClick && (
-      <p
-        className="cursor-pointer text-green-700 font-medium text-sm mt-4"
-        onClick={onClick}
-      >
-        Show Details
-      </p>
-    )}
-  </div>
-);
-
-const TableRow = ({ data }) => (
-  <div className="flex w-full gap-[10px] my-3">
-    {data.map((item, index) => (
-      <div
-        key={index}
-        className={`overflow-scroll ${item.width}`}
-        style={{ scrollbarWidth: "none" }}
-      >
-        <div
-          className={`flex items-center ${item?.center && "justify-center"}`}
-        >
-          {item.icon && <item.icon className="text-gray-600" />}
-          <p className={`text-base font-medium ${item.textColor || ""}`}>
-            {item.value}
-          </p>
-        </div>
-      </div>
-    ))}
-  </div>
-);
-
-const TableRowEvents = ({ data }) => (
-  <div className="flex w-full gap-[10px] my-5">
-    {data.map((item, index) => (
-      <div
-        key={index}
-        className={`overflow-scroll ${item.width}`}
-        style={{ scrollbarWidth: "none" }}
-      >
-        <div
-          className={`flex items-center ${item?.center && "justify-center"} ${
-            item?.status === "Pending"
-              ? "text-yellow-800 bg-[#ffd08978] py-1"
-              : item?.status === "Delivered"
-              ? "text-green-900 bg-green-100 py-1"
-              : item?.status === "Cancelled"
-              ? "text-red-900 bg-red-100 py-1"
-              : ""
-          } rounded-md`}
-        >
-          {item.icon && <item.icon className="text-gray-600" />}
-          <p
-            className={`text-base font-medium ${item.textColor || ""} ${
-              item.status && "text-sm"
-            }`}
-          >
-            {item.value}
-          </p>
-        </div>
-      </div>
-    ))}
-  </div>
-);
+  Users,
+  UserCog,
+  FileText,
+  Calendar,
+  ClipboardList,
+  Award,
+  BookOpen,
+} from 'lucide-react';
+import { useSelector } from 'react-redux';
 
 const Dashboard = () => {
-  const { user } = useSelector((state) => state?.auth);
-  const navigate = useNavigate();
-  const [loading, setLoading] = useState(false);
-  const [eventLoading, setEventLoading] = useState(false);
-  const [attendants, setAttendants] = useState([]);
-  const [events, setEvents] = useState([]);
-  const cardData = [
+  const { user } = useSelector((state)=>state?.auth);
+  
+
+  // Mock data for dashboard
+  const stats = [
     {
-      icon: FaUsers,
-      title: "Total Attendee",
-      value: "120",
-      bgColor: "bg-blue-800",
-      borderColor: "border-blue-800",
-      onClick: () => {
-        console.log("Customer Details");
-      },
+      title: 'Total Scholars',
+      value: '42',
+      description: 'Active research scholars',
+      icon: <Users className="h-6 w-6 text-muted-foreground" />,
     },
     {
-      icon: FaBox,
-      title: "New Events",
-      value: "35",
-      bgColor: "bg-[#1fb53f]",
-      borderColor: "border-[#1fb53f]",
-      onClick: () => {
-        console.log("Customer Details");
-      },
+      title: 'Supervisors',
+      value: '15',
+      description: 'Registered supervisors',
+      icon: <UserCog className="h-6 w-6 text-muted-foreground" />,
     },
     {
-      icon: FaWallet,
-      title: "Total Ticket Sold",
-      value: "₹ 12,000",
-      bgColor: "bg-[#e8d52a]",
-      borderColor: "border-[#e8d52a]",
-      onClick: () => {
-        console.log("Customer Details");
-      },
+      title: 'RAC Reports',
+      value: '128',
+      description: 'Total reports submitted',
+      icon: <FileText className="h-6 w-6 text-muted-foreground" />,
     },
     {
-      icon: RiSpeakAiLine,
-      title: "Total Speakers",
-      value: "56",
-      bgColor: "bg-pink-500",
-      borderColor: "border-pink-500",
-      onClick: () => {
-        console.log("Customer Details");
-      },
+      title: 'Upcoming Meetings',
+      value: '7',
+      description: 'Scheduled in next 30 days',
+      icon: <Calendar className="h-6 w-6 text-muted-foreground" />,
     },
   ];
 
-  //handle get attendee list
-  const handleGetAttendantList = async () => {
-    setLoading(true);
-    try {
-      const response = await axios.get(
-        `${import.meta.env.VITE_API_URL}/attendee`,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("access_token")}`,
-          },
-        }
-      );
-
-      if (response?.status === 200) {
-        setAttendants(response?.data?.data || []);
-
-        setLoading(false);
-      }
-    } catch (error) {
-      console.error("error while getting the attendant list:", error);
-      toast.error(
-        error?.response?.data?.message || "Failed to get attendant List"
-      );
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  //handle get Event list
-  const handleGetEventList = async () => {
-    setEventLoading(true);
-    try {
-      const response = await axios.get(
-        `${import.meta.env.VITE_API_URL}/events`,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("access_token")}`,
-          },
-        }
-      );
-
-      if (response?.status === 200) {
-        setEvents(response?.data?.data || []);
-        setEventLoading(false);
-      }
-    } catch (error) {
-      console.error("error while getting the Event list:", error);
-      toast.error(error?.response?.data?.message || "Failed to get Event List");
-    } finally {
-      setEventLoading(false);
-    }
-  };
-  const tableHeaders = [
-    { value: "Name", width: "w-4/12", icon: TbSortDescending2 },
-    { value: "Email", width: "w-4/12", icon: TbSortDescending2 },
-    { value: "Phone", width: "w-2/12", icon: TbSortDescending2 },
-    { value: "Return", width: "w-2/12", icon: TbSortDescending2 },
+  const recentActivities = [
+    {
+      id: 1,
+      type: 'report',
+      title: 'RAC Report Submitted',
+      scholar: 'Arun Kumar',
+      date: '2 hours ago',
+    },
+    {
+      id: 2,
+      type: 'meeting',
+      title: 'Meeting Scheduled',
+      scholar: 'Priya Singh',
+      date: '5 hours ago',
+    },
+    {
+      id: 3,
+      type: 'document',
+      title: 'Thesis Draft Uploaded',
+      scholar: 'Rahul Sharma',
+      date: '1 day ago',
+    },
+    {
+      id: 4,
+      type: 'recommendation',
+      title: 'Recommendation Added',
+      scholar: 'Neha Patel',
+      date: '2 days ago',
+    },
   ];
 
-  const tableHeadersEvents = [
-    { value: "Event Name", width: "w-4/12", icon: TbSortDescending2 },
-    { value: "Location", width: "w-3/12", icon: TbSortDescending2 },
-    { value: "Date", width: "w-3/12", icon: TbSortDescending2 },
-    { value: "Status", width: "w-2/12", icon: TbSortDescending2 },
+  const upcomingMeetings = [
+    {
+      id: 1,
+      title: 'RAC Meeting',
+      scholar: 'Arun Kumar',
+      date: 'Tomorrow, 10:00 AM',
+    },
+    {
+      id: 2,
+      title: 'Progress Review',
+      scholar: 'Priya Singh',
+      date: 'May 15, 2:30 PM',
+    },
+    {
+      id: 3,
+      title: 'Thesis Defense',
+      scholar: 'Rahul Sharma',
+      date: 'May 20, 11:00 AM',
+    },
   ];
 
-  useEffect(() => {
-    handleGetAttendantList();
-    handleGetEventList();
-  }, []);
+  const pendingTasks = [
+    {
+      id: 1,
+      title: 'Review RAC Report',
+      scholar: 'Arun Kumar',
+      deadline: 'May 12, 2025',
+    },
+    {
+      id: 2,
+      title: 'Approve Research Proposal',
+      scholar: 'Neha Patel',
+      deadline: 'May 15, 2025',
+    },
+    {
+      id: 3,
+      title: 'Provide Feedback on Draft',
+      scholar: 'Rahul Sharma',
+      deadline: 'May 18, 2025',
+    },
+  ];
+
   return (
-    <div className="w-full flex flex-col items-center md:px-4 px-2 pb-8">
-      {/* Header Section */}
-      <div className="border relative rounded-3xl shadow-sm bg-white w-full p-5 flex justify-between items-center mb-4 md:mt-[60px] md:h-[200px]">
-        <div>
-          <h1 className="text-2xl font-semibold text-[#616161]">
-            Good Morning,{" "}
-            <span className="text-[#212181]">{user?.username || "John"}</span>
-          </h1>
-          <p className="text-[#616161]">Have a nice day at work</p>
-        </div>
-        <img
-          src={dashboardImg}
-          alt="Dashboard"
-          className="h-[300px] absolute right-[100px] top-[-100px] md:flex hidden"
-        />
+    <div className="space-y-6">
+      <div className="flex flex-col space-y-2">
+        <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
+        <p className="text-muted-foreground">
+          Welcome back, {user?.name || 'User'}! Here's an overview of the Research Advisory Committee system.
+        </p>
       </div>
 
-      {/* Cards Section */}
-      <div className="flex md:flex-row flex-col w-full gap-[20px] md:my-5">
-        {cardData.map((card, index) => (
-          <Card key={index} {...card} />
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        {stats.map((stat, index) => (
+          <Card key={index}>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">{stat.title}</CardTitle>
+              {stat.icon}
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{stat.value}</div>
+              <p className="text-xs text-muted-foreground">{stat.description}</p>
+            </CardContent>
+          </Card>
         ))}
       </div>
 
-      {/* Table Section */}
-      <div className="w-full flex md:flex-row flex-col gap-[20px] my-5">
-        <div className="md:w-6/12 w-full rounded-2xl border shadow-lg p-4 pt-6 bg-white">
-          <div className="w-full flex justify-between items-center">
-            <p className="text-lg font-semibold">
-              Event Registration User List
-            </p>
-            <div className="flex gap-[5px] items-center cursor-pointer group">
-              <p
-                className="text-blue-800 group-hover:text-blue-gray-900"
-                onClick={() => navigate("/dashboard/attendant-list")}
-              >
-                See All
-              </p>
-              <FaChevronRight className="text-sm text-blue-800 group-hover:text-gray-900" />
-            </div>
-          </div>
-          {/* Table Headers */}
-          <TableRow
-            data={tableHeaders.map((header) => ({
-              value: header.value,
-              width: header.width,
-              icon: header.icon,
-              textColor: "text-gray-600",
-            }))}
-          />
-          {loading && (
-            <div className="w-full flex justify-center items-center h-[400px]">
-              <ColorRing
-                visible={true}
-                height="70"
-                width="70"
-                ariaLabel="color-ring-loading"
-                wrapperStyle={{}}
-                wrapperClass="color-ring-wrapper"
-                colors={["#000", "#000", "#000", "#000", "#000"]}
-              />
-            </div>
-          )}
-          {/* Table Rows */}
-          {!loading &&
-            Array.isArray(attendants) &&
-            attendants.length > 0 &&
-            attendants.map((row, index) => (
-              <TableRow
-                key={index}
-                data={[
-                  { value: row?.username, center: false, width: "w-4/12" },
-                  { value: row?.email, center: false, width: "w-4/12" },
-                  { value: row?.phone, center: false, width: "w-2/12" },
-                  {
-                    value: (
-                      <div className="cursor-pointer hover:bg-blue-800 hover:text-white flex items-center bg-gray-200 rounded-lg p-2 w-min">
-                        <CiRepeat className="text-lg" />
-                      </div>
-                    ),
-                    center: true,
-                    width: "w-2/12",
-                  },
-                ]}
-              />
-            ))}
-          {Array.isArray(attendants) && attendants?.length == 0 && (
-            <p>There is no Users</p>
-          )}
-        </div>
-        <div className="md:w-6/12 w-full rounded-2xl border shadow-lg p-4 pt-6 bg-white">
-          <div className="w-full flex justify-between items-center">
-            <p className="text-lg font-semibold">Event List</p>
-            <div className="flex gap-[5px] items-center cursor-pointer group">
-              <p
-                className="text-blue-800 group-hover:text-blue-gray-900"
-                onClick={() => navigate("/dashboard/event-list")}
-              >
-                See All
-              </p>
-              <FaChevronRight className="text-sm text-blue-800 group-hover:text-gray-900" />
-            </div>
-          </div>
-          {/* Table Headers */}
-          <TableRowEvents
-            data={tableHeadersEvents.map((header) => ({
-              value: header.value,
-              width: header.width,
-              icon: header.icon,
-              textColor: "text-gray-600",
-            }))}
-          />
+      <Tabs defaultValue="activities" className="space-y-4">
+        <TabsList>
+          <TabsTrigger value="activities">Recent Activities</TabsTrigger>
+          <TabsTrigger value="meetings">Upcoming Meetings</TabsTrigger>
+          <TabsTrigger value="tasks">Pending Tasks</TabsTrigger>
+        </TabsList>
+        <TabsContent value="activities" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>Recent Activities</CardTitle>
+              <CardDescription>Latest activities in the system</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                {recentActivities.map((activity) => (
+                  <div key={activity.id} className="flex items-start space-x-4">
+                    <div className="rounded-full p-2 bg-muted">
+                      {activity.type === 'report' && <FileText className="h-4 w-4" />}
+                      {activity.type === 'meeting' && <Calendar className="h-4 w-4" />}
+                      {activity.type === 'document' && <BookOpen className="h-4 w-4" />}
+                      {activity.type === 'recommendation' && <ClipboardList className="h-4 w-4" />}
+                    </div>
+                    <div className="space-y-1">
+                      <p className="text-sm font-medium">{activity.title}</p>
+                      <p className="text-sm text-muted-foreground">
+                        Scholar: {activity.scholar} • {activity.date}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+        <TabsContent value="meetings" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>Upcoming Meetings</CardTitle>
+              <CardDescription>Scheduled meetings and presentations</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                {upcomingMeetings.map((meeting) => (
+                  <div key={meeting.id} className="flex items-start space-x-4">
+                    <div className="rounded-full p-2 bg-muted">
+                      <Calendar className="h-4 w-4" />
+                    </div>
+                    <div className="space-y-1">
+                      <p className="text-sm font-medium">{meeting.title}</p>
+                      <p className="text-sm text-muted-foreground">
+                        Scholar: {meeting.scholar} • {meeting.date}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+        <TabsContent value="tasks" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>Pending Tasks</CardTitle>
+              <CardDescription>Tasks requiring your attention</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                {pendingTasks.map((task) => (
+                  <div key={task.id} className="flex items-start space-x-4">
+                    <div className="rounded-full p-2 bg-muted">
+                      <ClipboardList className="h-4 w-4" />
+                    </div>
+                    <div className="space-y-1">
+                      <p className="text-sm font-medium">{task.title}</p>
+                      <p className="text-sm text-muted-foreground">
+                        Scholar: {task.scholar} • Due: {task.deadline}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
 
-          {eventLoading && (
-            <div className="w-full flex justify-center items-center h-[400px]">
-              <ColorRing
-                visible={true}
-                height="70"
-                width="70"
-                ariaLabel="color-ring-loading"
-                wrapperStyle={{}}
-                wrapperClass="color-ring-wrapper"
-                colors={["#000", "#000", "#000", "#000", "#000"]}
-              />
+      <div className="grid gap-4 md:grid-cols-2">
+        <Card>
+          <CardHeader>
+            <CardTitle>Recent Submissions</CardTitle>
+            <CardDescription>Latest thesis and report submissions</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-2">
+                  <BookOpen className="h-4 w-4 text-muted-foreground" />
+                  <div>
+                    <p className="text-sm font-medium">Thesis Draft</p>
+                    <p className="text-xs text-muted-foreground">Rahul Sharma • 1 day ago</p>
+                  </div>
+                </div>
+                <Button variant="outline" size="sm">
+                  View
+                </Button>
+              </div>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-2">
+                  <FileText className="h-4 w-4 text-muted-foreground" />
+                  <div>
+                    <p className="text-sm font-medium">Progress Report</p>
+                    <p className="text-xs text-muted-foreground">Priya Singh • 3 days ago</p>
+                  </div>
+                </div>
+                <Button variant="outline" size="sm">
+                  View
+                </Button>
+              </div>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-2">
+                  <Award className="h-4 w-4 text-muted-foreground" />
+                  <div>
+                    <p className="text-sm font-medium">Research Proposal</p>
+                    <p className="text-xs text-muted-foreground">Neha Patel • 5 days ago</p>
+                  </div>
+                </div>
+                <Button variant="outline" size="sm">
+                  View
+                </Button>
+              </div>
             </div>
-          )}
-          {/* Table Rows */}
-          {!eventLoading &&
-            Array.isArray(events) &&
-            events.length > 0 &&
-            events.map((row, index) => (
-              <TableRowEvents
-                key={index}
-                data={[
-                  { value: row?.name, center: false, width: "w-4/12" },
-                  { value: row?.location, center: false, width: "w-3/12" },
-                  {
-                    value: formatDate(row?.date),
-                    center: false,
-                    width: "w-3/12",
-                  },
-
-                  {
-                    value: "Pending",
-                    center: true,
-                    width: "w-2/12",
-                    status: "Pending",
-                  },
-                  ,
-                ]}
-              />
-            ))}
-          {Array.isArray(events) && events?.length == 0 && (
-            <p>There is no Events</p>
-          )}
-        </div>
-      </div>
-
-      <div className="w-full flex md:flex-row flex-col gap-[20px] my-4">
-        <div className="md:w-7/12 w-full rounded-2xl border shadow-lg p-4 pt-6 bg-white">
-          <h2 className="text-lg font-semibold mb-4">Monthly Progress</h2>
-          <BarGraph />
-        </div>
-        <div className="md:w-5/12 w-full rounded-2xl border shadow-lg p-4 pt-6 bg-white">
-          <h2 className="text-lg font-semibold mb-4">Today's Report</h2>
-          <div className="w-full flex flex-col items-center justify-center mt-1">
-            <p className="text-gray-600">Total Earning</p>
-            <p className="text-3xl font-bold">₹ 1000</p>
-            <ReportGraph />
-          </div>
-        </div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle>Upcoming Deadlines</CardTitle>
+            <CardDescription>Important dates and deadlines</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              <div className="flex items-center space-x-4">
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10">
+                  <Calendar className="h-5 w-5 text-primary" />
+                </div>
+                <div>
+                  <p className="text-sm font-medium">RAC Meeting Submission Deadline</p>
+                  <p className="text-xs text-muted-foreground">May 15, 2025</p>
+                </div>
+              </div>
+              <div className="flex items-center space-x-4">
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10">
+                  <Calendar className="h-5 w-5 text-primary" />
+                </div>
+                <div>
+                  <p className="text-sm font-medium">Thesis Submission Deadline</p>
+                  <p className="text-xs text-muted-foreground">June 30, 2025</p>
+                </div>
+              </div>
+              <div className="flex items-center space-x-4">
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10">
+                  <Calendar className="h-5 w-5 text-primary" />
+                </div>
+                <div>
+                  <p className="text-sm font-medium">Annual Progress Review</p>
+                  <p className="text-xs text-muted-foreground">July 15, 2025</p>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );
