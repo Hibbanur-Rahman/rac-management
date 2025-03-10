@@ -30,7 +30,7 @@ const Register = () => {
         email: email,
         password: password,
         name: username,
-        role: "admin",
+        role: role,
       };
       const response = await userService.Register(payload);
       if (response.status === 201) {
@@ -118,7 +118,7 @@ const Register = () => {
             )}
           </div>
           <div className="flex flex-col w-full relative mb-5">
-            <Select>
+            <Select onValueChange={setRole} value={role}>
               <SelectTrigger className="w-[180px]">
                 <SelectValue placeholder="Select a Role" />
               </SelectTrigger>

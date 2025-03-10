@@ -1,13 +1,16 @@
 import Navbar from "@/components/navbar";
-import Dashboard from "@/views/dashboard/dashboard";
+import Dashboard from "@/views/dashboard/admin/dashboard";
 import Sidebar from "@/components/sidebar";
 import React, { useEffect } from "react";
 import { Route, Routes, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { login } from "@/redux/slices/authSlice";
-import Profile from "@/views/dashboard/profile";
+import Profile from "@/views/dashboard/admin/profile";
 
 import { setMobileView } from "@/redux/slices/sidebarSlice";
+import ScholarList from "@/views/dashboard/admin/scholarList";
+import SupervisorList from "@/views/dashboard/admin/supervisorList";
+import CoordinatorList from "@/views/dashboard/admin/coordinatorList";
 
 const DashboardLayout = () => {
   const dispatch = useDispatch();
@@ -57,6 +60,9 @@ const DashboardLayout = () => {
           <Routes>
             <Route path="/" element={<Dashboard />} />
             <Route path="/profile" element={<Profile />} />
+            <Route path="/scholar-list" element={<ScholarList />} />
+            <Route path="/supervisor-list" element={<SupervisorList />} />
+            <Route path="/coordinator-list" element={<CoordinatorList />} />
           </Routes>
         </div>
       </div>

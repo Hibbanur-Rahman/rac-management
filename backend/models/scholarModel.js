@@ -1,26 +1,31 @@
-const mongoose=require('mongoose');
+const mongoose = require("mongoose");
 
 const scholarSchema = new mongoose.Schema(
   {
     userId: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,
-      ref: 'User',
+      ref: "User",
     },
     name: {
       type: String,
-      required: [true, 'Please add a name'],
+      required: [true, "Please add a name"],
       maxlength: 50,
+    },
+    email: {
+      type: String,
+      required: [true, "Please add an email"],
+      unique: true,
     },
     rollNo: {
       type: String,
-      required: [true, 'Please add a roll number'],
+      required: false,
       maxlength: 15,
-      unique: true,
+      unique: false,
     },
     gender: {
       type: String,
-      enum: ['Male', 'Female', 'Other'],
+      enum: ["Male", "Female", "Other"],
     },
     dateOfAdmission: {
       type: Date,
@@ -46,31 +51,35 @@ const scholarSchema = new mongoose.Schema(
     status: {
       type: String,
       required: true,
-      enum: ['Active', 'On Leave', 'Completed', 'Discontinued'],
-      default: 'Active',
+      enum: ["Active", "On Leave", "Completed", "Discontinued"],
+      default: "Active",
     },
     dateOfAward: {
       type: Date,
     },
     supervisorId: {
       type: mongoose.Schema.Types.ObjectId,
-      required: true,
-      ref: 'Supervisor',
+      required: false,
+      ref: "Supervisor",
     },
     hodNomineeId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'Supervisor',
+      ref: "Supervisor",
     },
     supervisorNomineeId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'Supervisor',
+      ref: "Supervisor",
     },
+    role:{
+      type:String,
+      required:false
+    }
   },
   {
     timestamps: true,
   }
 );
 
-const Scholar = mongoose.model('Scholar', scholarSchema);
+const Scholar = mongoose.model("Scholar", scholarSchema);
 
-module.exports= Scholar;
+module.exports = Scholar;

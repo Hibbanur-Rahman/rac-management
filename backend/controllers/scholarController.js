@@ -3,6 +3,7 @@ const Scholar = require("../models/scholarModel.js");
 const User = require("../models/userModel.js");
 const RacReport = require("../models/racReportModel.js");
 const Document = require("../models/documentModel.js");
+const httpStatusCode = require("../constants/httpStatusCode.js");
 
 // @desc    Get all scholars
 // @route   GET /api/scholars
@@ -12,7 +13,15 @@ const getScholars = asyncHandler(async (req, res) => {
     .populate("supervisorId", "salutation name")
     .populate("hodNomineeId", "salutation name")
     .populate("supervisorNomineeId", "salutation name");
-  res.json(scholars);
+  if (!scholars) {
+    return res
+      .status(httpStatusCode.BAD_REQUEST)
+      .json({ success: false, message: "No scholars found" });
+  }
+  return res.status(httpStatusCode.OK).json({
+    success: true,
+    data: scholars,
+  });
 });
 
 // @desc    Get scholar by ID

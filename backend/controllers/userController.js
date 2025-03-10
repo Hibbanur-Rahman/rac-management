@@ -4,6 +4,7 @@ const User = require("../models/userModel.js");
 const Scholar = require("../models/scholarModel.js");
 const Supervisor = require("../models/supervisorModel.js");
 const { getToken } = require("../middleware/authMiddleware.js");
+const httpStatusCode = require("../constants/httpStatusCode.js");
 
 // @desc    Register a new user
 // @route   POST /api/users
@@ -37,6 +38,37 @@ const registerUser = asyncHandler(async (req, res) => {
       role: user.role,
       token: token,
     });
+    let roleUser;
+    if (role === "scholar") {
+      roleUser = await Scholar.create({
+        userId: user._id,
+        name: name,
+        email: email,
+        role: "scholar",
+      });
+    } else if (role === "supervisor") {
+      roleUser = await Supervisor.create({
+        userId: user._id,
+        name: name,
+        email: email,
+        role: "supervisor",
+      });
+    } else if (role === "coordinator") {
+      roleUser = await Supervisor.create({
+        userId: user._id,
+        name: name,
+        email: email,
+        role: "supervisor",
+        isCoordinator: true,
+      });
+    }
+
+    if (!roleUser) {
+      res.status(httpStatusCode.BAD_REQUEST).json({
+        success: false,
+        message: "Error creating user role",
+      });
+    }
   } else {
     res.status(400);
     throw new Error("Invalid user data");
@@ -54,7 +86,7 @@ const loginUser = asyncHandler(async (req, res) => {
 
   if (user && (await user.matchPassword(password))) {
     const token = await getToken(user);
-    console.log("token:",token)
+    console.log("token:", token);
     res.json({
       _id: user._id,
       name: user.name,
