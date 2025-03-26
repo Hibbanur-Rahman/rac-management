@@ -2,13 +2,34 @@ const asyncHandler = require("../utils/asyncHandler.js");
 const Supervisor = require("../models/supervisorModel.js");
 const Scholar = require("../models/scholarModel.js");
 const User = require("../models/userModel.js");
+const httpStatusCode = require("../constants/httpStatusCode.js");
 
 // @desc    Get all supervisors
 // @route   GET /api/supervisors
 // @access  Private
 const getSupervisors = asyncHandler(async (req, res) => {
-  const supervisors = await Supervisor.find({});
-  res.json(supervisors);
+  try {
+    const Supervisors = await Supervisor.find({});
+    if (!Supervisors) {
+      return res.status(httpStatusCode.NOT_FOUND).json({
+        success: false,
+        message: "No supervisors found",
+      });
+    }
+
+    return res.status(httpStatusCode.OK).json({
+      success: true,
+      data: Supervisors,
+      message: "Supervisor found successfully!",
+    });
+  } catch (error) {
+    console.log("error while getting the supervisor:", error);
+    return res.status(httpStatusCode.INTERNAL_SERVER_ERROR).json({
+      success: false,
+      message: "something went wrong ",
+      error: error.message || "something went wrong",
+    });
+  }
 });
 
 // @desc    Get supervisor by ID
@@ -161,6 +182,31 @@ const getSupervisorCommittees = asyncHandler(async (req, res) => {
   res.json(formattedCommittees);
 });
 
+const getCoordinator = asyncHandler(async (req, res) => {
+  try {
+    const Coordinator = await Supervisor.find({ isCoordinator: true });
+    if (!Coordinator) {
+      return res.status(httpStatusCode.BAD_REQUEST).json({
+        success: false,
+        message: "No Coordinator Found",
+      });
+    }
+
+    return res.status(httpStatusCode.OK).json({
+      success: true,
+      message: "Coordinator Found",
+      data: Coordinator,
+    });
+  } catch (error) {
+    console.log("error while getting coordinator", error);
+    return res.status(httpStatusCode.INTERNAL_SERVER_ERROR).json({
+      success: false,
+      message: "Something went wrong while getting coordinator",
+      error: error.message || "something went wrong",
+    });
+  }
+});
+
 module.exports = {
   getSupervisors,
   getSupervisorById,
@@ -169,4 +215,5 @@ module.exports = {
   deleteSupervisor,
   getSupervisorScholars,
   getSupervisorCommittees,
+  getCoordinator
 };

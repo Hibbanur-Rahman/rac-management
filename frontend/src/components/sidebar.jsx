@@ -10,7 +10,7 @@ import { LuNotebookPen } from "react-icons/lu";
 import { FaRegUser } from "react-icons/fa";
 import { LuLogOut } from "react-icons/lu";
 import { FiTrello } from "react-icons/fi";
-import sidebarSupportImg from '../assets/images/sidebar-support-img.svg';
+import sidebarSupportImg from "../assets/images/sidebar-support-img.svg";
 import { LuCalendarRange } from "react-icons/lu";
 const Sidebar = () => {
   const navigate = useNavigate();
@@ -68,7 +68,10 @@ const Sidebar = () => {
   };
 
   return (
-    <div className="w-full flex flex-col justify-between bg-white shadow-xl p-4 px-2 h-full rounded-e-[50px]">
+    <div
+      className="w-full flex flex-col justify-between bg-white shadow-xl p-4 px-2 h-full rounded-e-[50px] overflow-y-scroll"
+      style={{ scrollbarWidth: "none" }}
+    >
       <div className="w-full">
         {menuItems
           .filter((item) => item.roles.includes(role)) // Filter items based on role
@@ -105,13 +108,24 @@ const Sidebar = () => {
       </div>
       <div className="w-full ">
         <div className="w-full bg-blue-700 rounded-2xl p-5">
-            <h1 className="text-white text-xl font-semibold my-1">Support 24/7</h1>
-            <p className=" text-white">Contacts us anytime</p>
-            <button className="text-primary bg-white rounded-lg px-5 my-2 py-1 relative z-[3]">Start</button>
-            <img src={sidebarSupportImg} alt="" className="h-[130px] w-[150px] relative z-[0] right-[-40px] mt-[-50px]" />
+          <h1 className="text-white text-xl font-semibold my-1">
+            Support 24/7
+          </h1>
+          <p className=" text-white">Contacts us anytime</p>
+          <button className="text-primary bg-white rounded-lg px-5 my-2 py-1 relative z-[3]">
+            Start
+          </button>
+          <img
+            src={sidebarSupportImg}
+            alt=""
+            className="h-[130px] w-[150px] relative z-[0] right-[-40px] mt-[-50px]"
+          />
         </div>
-        <div onClick={handleLogout} className="flex gap-[10px] items-center my-4 px-2 cursor-pointer">
-          <LuLogOut className="text-xl text-red-400"/>
+        <div
+          onClick={handleLogout}
+          className="flex gap-[10px] items-center my-4 px-2 cursor-pointer"
+        >
+          <LuLogOut className="text-xl text-red-400" />
           <p className="text-base text-red-400">Logout</p>
         </div>
       </div>

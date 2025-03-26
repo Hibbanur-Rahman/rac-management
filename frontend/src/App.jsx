@@ -8,7 +8,7 @@ import DashboardLayout from "@/layout/dashboardLayout";
 const App = () => {
   const navigate = useNavigate();
   useEffect(() => {
-    if (localStorage.getItem("user-token")) {
+    if (localStorage.getItem("access_token")) {
       navigate("/dashboard");
     } else {
       navigate("/login");

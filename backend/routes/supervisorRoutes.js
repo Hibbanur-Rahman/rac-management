@@ -7,11 +7,13 @@ const {
   deleteSupervisor,
   getSupervisorScholars,
   getSupervisorCommittees,
+  getCoordinator,
 } = require("../controllers/supervisorController.js");
 const {
   protect,
   admin,
   checkRole,
+  verifyToken,
 } = require("../middleware/authMiddleware.js");
 
 const router = express.Router();
@@ -34,5 +36,7 @@ router.route("/:id/scholars").get(protect, getSupervisorScholars);
 
 // Get supervisor's committee memberships
 router.route("/:id/committees").get(protect, getSupervisorCommittees);
+
+
 
 module.exports = router;

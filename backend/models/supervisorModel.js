@@ -8,22 +8,22 @@ const supervisorSchema = new mongoose.Schema(
     },
     salutation: {
       type: String,
-      required: [true, "Please add a salutation"],
+      required: false,
       maxlength: 10,
     },
     name: {
       type: String,
-      required: [true, "Please add a name"],
+      required: false,
       maxlength: 50,
     },
     designation: {
       type: String,
-      required: [true, "Please add a designation"],
+      required: false,
       maxlength: 15,
     },
     department: {
       type: String,
-      required: [true, "Please add a department"],
+      required: false,
       maxlength: 35,
     },
     university: {
