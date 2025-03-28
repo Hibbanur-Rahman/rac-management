@@ -12,6 +12,7 @@ import { LuLogOut } from "react-icons/lu";
 import { FiTrello } from "react-icons/fi";
 import sidebarSupportImg from "../assets/images/sidebar-support-img.svg";
 import { LuCalendarRange } from "react-icons/lu";
+import { Calendar, FileText, MessageSquare, TrendingUp } from "lucide-react";
 const Sidebar = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -31,19 +32,43 @@ const Sidebar = () => {
       label: "Scholars List",
       path: "/dashboard/scholar-list",
       icon: LuNotebookPen,
-      roles: ["admin", "coordinator", "supervisor", "scholar"],
+      roles: ["admin", "coordinator", "supervisor"],
     },
     {
       label: "Supervisor List",
       path: "/dashboard/supervisor-list",
       icon: LuCalendarRange,
-      roles: ["admin", "coordinator", "supervisor", "scholar"],
+      roles: ["admin", "coordinator", "supervisor"],
     },
     {
       label: "Coordinator List",
       path: "/dashboard/coordinator-list",
       icon: GiMedicines,
-      roles: ["admin", "coordinator", "supervisor", "scholar"],
+      roles: ["admin", "coordinator", "supervisor"],
+    },
+    {
+      label: "Research Progress",
+      path: "/dashboard/research-progress", 
+      icon: TrendingUp,
+      roles: ["scholar"],
+    },
+    {
+      label: "Documents",
+      path: "/dashboard/documents",
+      icon: FileText, 
+      roles: ["scholar"],
+    },
+    {
+      label: "Meetings",
+      path: "/dashboard/meetings",
+      icon: Calendar, 
+      roles: ["scholar"],
+    },
+    {
+      label: "Communication",
+      path: "/dashboard/communication",
+      icon: MessageSquare, 
+      roles: ["scholar"],
     },
 
     {
@@ -52,12 +77,6 @@ const Sidebar = () => {
       icon: FaRegUser,
       roles: ["admin", "coordinator", "supervisor", "scholar"],
     },
-    // {
-    //   label: "Logout",
-    //   path: "/dashboard/logout",
-    //   icon: LuLogOut,
-    //   roles: ["admin", "user"],
-    // },
   ];
 
   const handleLogout = () => {
