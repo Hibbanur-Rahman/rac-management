@@ -38,13 +38,13 @@ const Sidebar = () => {
       label: "Supervisor List",
       path: "/dashboard/supervisor-list",
       icon: LuCalendarRange,
-      roles: ["admin", "coordinator", "supervisor"],
+      roles: ["admin", "coordinator"],
     },
     {
       label: "Coordinator List",
       path: "/dashboard/coordinator-list",
       icon: GiMedicines,
-      roles: ["admin", "coordinator", "supervisor"],
+      roles: ["admin", "coordinator"],
     },
     {
       label: "Research Progress",
@@ -56,19 +56,19 @@ const Sidebar = () => {
       label: "Documents",
       path: "/dashboard/documents",
       icon: FileText, 
-      roles: ["scholar"],
+      roles: ["scholar","supervisor"],
     },
     {
       label: "Meetings",
       path: "/dashboard/meetings",
       icon: Calendar, 
-      roles: ["scholar"],
+      roles: ["scholar","supervisor"],
     },
     {
       label: "Communication",
       path: "/dashboard/communication",
       icon: MessageSquare, 
-      roles: ["scholar"],
+      roles: ["scholar","supervisor"],
     },
 
     {

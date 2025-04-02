@@ -16,6 +16,7 @@ import ResearchProgress from "@/views/dashboard/scholar/researchProgress";
 import DocumentManagement from "@/views/dashboard/scholar/document";
 import MeetingManagement from "@/views/dashboard/scholar/meeting";
 import CommunicationSection from "@/views/dashboard/scholar/communication";
+import SupervisorDashboard from "@/views/dashboard/supervisor/dashboard";
 
 const DashboardLayout = () => {
   const dispatch = useDispatch();
@@ -29,6 +30,8 @@ const DashboardLayout = () => {
         return <AdminDashboard />;
       case "scholar":
         return <ScholarDashboard />;
+      case "supervisor":
+        return <SupervisorDashboard />;
     }
   };
 
@@ -76,7 +79,7 @@ const DashboardLayout = () => {
             <Route path="/research-progress" element={<ResearchProgress />} />
             <Route path="/documents" element={<DocumentManagement />} />
             <Route path="/meetings" element={<MeetingManagement />} />
-            <Route path="/communication" element={<CommunicationSection/>}/>
+            <Route path="/communication" element={<CommunicationSection />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/scholar-list" element={<ScholarList />} />
             <Route path="/supervisor-list" element={<SupervisorList />} />
